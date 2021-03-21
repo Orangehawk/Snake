@@ -89,16 +89,23 @@ void GameMap::MoveSnake(Direction dir)
 	switch (dir)
 	{
 	case Direction::UP:
+		if (gameMap[currentHead->row - 1][currentHead->column] == iconFood)
+			snake->AddTail();
 		snake->MoveSnake(currentHead->row - 1, currentHead->column);
 		break;
 	case Direction::DOWN:
+		if (gameMap[currentHead->row + 1][currentHead->column] == iconFood)
+			snake->AddTail();
 		snake->MoveSnake(currentHead->row + 1, currentHead->column);
 		break;
 	case Direction::LEFT:
+		if (gameMap[currentHead->row][currentHead->column - 1] == iconFood)
 			snake->AddTail();
 		snake->MoveSnake(currentHead->row, currentHead->column - 1);
 		break;
 	case Direction::RIGHT:
+		if (gameMap[currentHead->row][currentHead->column + 1] == iconFood)
+			snake->AddTail();
 		snake->MoveSnake(currentHead->row, currentHead->column + 1);
 		break;
 	default:
@@ -106,16 +113,6 @@ void GameMap::MoveSnake(Direction dir)
 	}
 
 	currentHead = snake->GetHead();
-	if (CheckCell(currentHead->row, currentHead->column) == 1 || CheckCell(currentHead->row, currentHead->column) == 2)
-	{
-		for(int i = 0; i < 500; i++)
-			std::cout << "Game Over" << std::endl;
-	}
-	else if (CheckCell(currentHead->row, currentHead->column) == 3)
-	{
-		snake->AddTail();
-	}
-
 	gameMap[currentHead->row][currentHead->column] = iconHead;
 }
 

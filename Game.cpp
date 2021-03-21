@@ -3,9 +3,6 @@
 #include "GameMap.h"
 
 
-GameMap* map;
-
-
 void ClearScreen()
 {
 	HANDLE                     hStdOut;
@@ -43,6 +40,7 @@ void ClearScreen()
 	SetConsoleCursorPosition(hStdOut, homeCoords);
 }
 
+GameMap* map;
 void Step()
 {
 	int waitTime = 500;
@@ -55,49 +53,24 @@ int main()
 {
 	std::cout << "Program Start" << std::endl;
 
-	HANDLE hstdin;
-	DWORD  mode;
-
-	hstdin = GetStdHandle(STD_INPUT_HANDLE);
-	GetConsoleMode(hstdin, &mode);
-	SetConsoleMode(hstdin, ENABLE_ECHO_INPUT | ENABLE_PROCESSED_INPUT);
-
-	map = new GameMap(9, 25);
-	map->AddFood(4, 21);
-	map->AddFood(3, 6);
-	map->AddFood(6, 23);
-	map->AddFood(2, 1);
-	map->AddFood(0, 15);
-
-	while (true)
-	{
-		ClearScreen();
-		map->DisplayMap();
-
-		char ch = std::cin.get();
-
-		switch (ch)
-		{
-		case 'w':
-			map->MoveSnake(GameMap::Direction::UP);
-			break;
-		case 's':
-			map->MoveSnake(GameMap::Direction::DOWN);
-			break;
-		case 'a':
-			map->MoveSnake(GameMap::Direction::LEFT);
-			break;
-		case 'd':
-			map->MoveSnake(GameMap::Direction::RIGHT);
-			break;
-		}
-
-	}
-	
+	/*GameMap* */map = new GameMap(9, 25);
+	map->AddFood(4, 11);
+	ClearScreen();
+	map->DisplayMap();
+	Sleep(2000);
+	map->MoveSnake(GameMap::Direction::LEFT);
+	Step();
+	map->MoveSnake(GameMap::Direction::LEFT);
+	Step();
+	map->MoveSnake(GameMap::Direction::LEFT);
+	Step();
+	map->MoveSnake(GameMap::Direction::LEFT);
+	Step();
+	map->MoveSnake(GameMap::Direction::LEFT);
+	Step();
 	delete map;
 
 	std::cout << "End" << std::endl;
 
-	SetConsoleMode(hstdin, mode);
 	return 0;
 }
