@@ -5,7 +5,7 @@
 
 GameMap* map;
 
-
+//Swap for glut/glfw
 void ClearScreen()
 {
 	HANDLE                     hStdOut;
@@ -45,7 +45,7 @@ void ClearScreen()
 
 void Step()
 {
-	int waitTime = 500;
+	int waitTime = 100;
 	Sleep(waitTime);
 	ClearScreen();
 	map->DisplayMap();
@@ -57,7 +57,7 @@ TCHAR getkeypress()
 	HANDLE h = GetStdHandle(STD_INPUT_HANDLE);
 	if (h == NULL) return 0;  // not a console
 	GetConsoleMode(h, &mode);
-	SetConsoleMode(h, mode & ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT));
+	SetConsoleMode(h, 0);
 	TCHAR c = 0;
 	ReadConsole(h, &c, 1, &count, NULL);
 	SetConsoleMode(h, mode);
@@ -67,13 +67,6 @@ TCHAR getkeypress()
 int main()
 {
 	std::cout << "Program Start" << std::endl;
-
-	HANDLE hstdin;
-	DWORD  mode;
-
-	hstdin = GetStdHandle(STD_INPUT_HANDLE);
-	GetConsoleMode(hstdin, &mode);
-	SetConsoleMode(hstdin, ENABLE_ECHO_INPUT | ENABLE_PROCESSED_INPUT);
 
 	map = new GameMap(9, 25);
 	map->AddFood(4, 21);
@@ -86,11 +79,16 @@ int main()
 	map->DisplayMap();
 	Sleep(2000);
 
+	char ch = 'a';
+	char dir = ' ';
 	while (true)
 	{
-		char ch = getkeypress();
+		ch = getkeypress();
 
-		switch (ch)
+		if (dir != ch && (ch == 'w' || ch == 's' || ch == 'a' || ch == 'd'))
+			dir = ch;
+
+		switch (dir)
 		{
 		case 'w':
 			map->MoveSnake(GameMap::Direction::UP);
@@ -107,13 +105,14 @@ int main()
 		}
 
 		Step();
-		std::cout << ch << std::endl;
+		std::cout << dir << std::endl;
+		std::cout << dir << std::endl;
+		std::cout << dir << std::endl;
 	}
 	
 	delete map;
 
 	std::cout << "End" << std::endl;
 
-	SetConsoleMode(hstdin, mode);
 	return 0;
 }

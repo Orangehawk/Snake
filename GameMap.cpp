@@ -86,35 +86,38 @@ void GameMap::MoveSnake(Direction dir)
 	gameMap[currentHead->row][currentHead->column] = iconTail;
 	gameMap[currentTailEnd->row][currentTailEnd->column] = iconEmpty;
 
+	int newRow = currentHead->row;
+	int newColumn = currentHead->column;
+
 	switch (dir)
 	{
 	case Direction::UP:
-		snake->MoveSnake(currentHead->row - 1, currentHead->column);
+		newRow = currentHead->row - 1;
 		break;
 	case Direction::DOWN:
-		snake->MoveSnake(currentHead->row + 1, currentHead->column);
+		newRow = currentHead->row + 1;
 		break;
 	case Direction::LEFT:
-		snake->MoveSnake(currentHead->row, currentHead->column - 1);
+		newColumn = currentHead->column - 1;
 		break;
 	case Direction::RIGHT:
-		snake->MoveSnake(currentHead->row, currentHead->column + 1);
+		newColumn = currentHead->column + 1;
 		break;
 	default:
 		std::cout << "Invalid Direction" << std::endl;
 	}
 
-	if (CheckCell(currentHead->row, currentHead->column) == 1 || CheckCell(currentHead->row, currentHead->column) == 2)
+	if (CheckCell(newRow, newColumn) == 1 || CheckCell(newRow, newColumn) == 2)
 	{
 		std::cout << "GameOver" << std::endl;
 		exit(0);
 	}
-	else if (CheckCell(currentHead->row, currentHead->column) == 3)
+	else if (CheckCell(newRow, newColumn) == 3)
 	{
 		snake->AddTail();
 	}
 
-	//snake->MoveSnake(
+	snake->MoveSnake(newRow, newColumn);
 
 	currentHead = snake->GetHead();
 	gameMap[currentHead->row][currentHead->column] = iconHead;
