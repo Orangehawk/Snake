@@ -2,8 +2,8 @@
 
 struct Tail
 {
-	int row;
-	int column;
+	int row = 0;
+	int column = 0;
 	Tail* next = nullptr;
 	Tail* prev = nullptr;
 	bool freeze = true; //Used for when adding a new tail segment, compare and then set to false when moving the snake

@@ -17,7 +17,7 @@ GameMap::GameMap(int mapRows, int mapColumns)
 	CreateWalls();
 
 	std::cout << "Snake starts at row: " << (int)round(mapRows / 2) << ", column: " << (int)round(mapColumns / 2) << std::endl;
-	snake = new Snake((int)round(mapRows/2), (int)round(mapColumns / 2));
+	snake = new Snake((int)round(mapRows / 2), (int)round(mapColumns / 2));
 	gameMap[snake->GetHead()->row][snake->GetHead()->column] = iconHead;
 }
 
