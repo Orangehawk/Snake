@@ -149,16 +149,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FileUtils.cpp" />
     <ClCompile Include="GameMap.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="OBJFile.cpp" />
-    <ClCompile Include="OBJLoader.cpp" />
+    <ClCompile Include="OBJUtils.cpp" />
     <ClCompile Include="Snake.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FileUtils.h" />
     <ClInclude Include="GameMap.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="OBJFile.h" />
-    <ClInclude Include="OBJLoader.h" />
+    <ClInclude Include="OBJUtils.h" />
     <ClInclude Include="Snake.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

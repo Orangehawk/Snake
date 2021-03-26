@@ -4,13 +4,15 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include "glut.h"
+#include "freeglut.h"
 #include "GameMap.h"
-#include "OBJFile.h"
+#include "OBJUtils.h"
+#include "GameObject.h"
 
 
 GameMap* map;
-OBJFile* cube;
+
+std::vector<GameObject*> gameObjects;
 
 void MyInit()
 {
@@ -27,115 +29,6 @@ void MyInit()
 	gluLookAt(5, 3, 5, 0, 0, 0, 0, 1, 0);
 
 	glEnable(GL_DEPTH_TEST);
-}
-
-int GetFileLineCount(std::string fileName)
-{
-	std::ifstream infile(fileName);
-	std::string line;
-
-	int count = 0;
-
-	while (getline(infile, line, '\n'))
-	{
-		count++;
-	}
-
-	return count + 1; //Add extra 1 because there's no newline at the end of the file
-}
-
-OBJFile* LoadOBJ(std::string fileName)
-{
-	std::cout << "Entered \"Load OBJ\"" << std::endl;
-	std::ifstream infile(fileName);
-	std::string line;
-	std::string token;
-
-	if (!infile)
-	{
-		//std::cout << "Failed to open OBJ file" << std::endl;
-	}
-
-	int totalFileLines = GetFileLineCount(fileName);
-	std::cout << totalFileLines << std::endl;
-
-	OBJFile* obj = new OBJFile();
-	int count = 0;
-	while (getline(infile, line, '\n'))
-	{
-		std::istringstream is(line);
-
-		getline(is, token, ' ');
-		if (token == "o")
-		{
-			getline(is, token, ' ');
-			obj->SetName(token);
-		}
-		else if (token == "v")
-		{
-			double x, y, z;
-
-			getline(is, token, ' ');
-			x = std::stof(token);
-
-			getline(is, token, ' ');
-			y = std::stof(token);
-
-			getline(is, token, ' ');
-			z = std::stof(token);
-
-			obj->AddVertice(x, y, z);
-		}
-		else if (token == "vt")
-		{
-			//std::cout << "vt unsupported currently" << std::endl;
-		}
-		else if (token == "vn")
-		{
-			//std::cout << "vn unsupported currently" << std::endl;
-
-		}
-		else if (token == "f")
-		{
-			int vertices[3];
-
-			for (int i = 0; i < 3; i++)
-			{
-				getline(is, token, ' ');
-				vertices[i] = std::stof(token) - 1;
-			}
-
-			obj->AddFace(vertices[0], vertices[1], vertices[2]);
-		}
-		else
-		{
-			//std::cout << "unsupported token" << std::endl;
-		}
-	}
-
-	for (int i = 0; i < obj->GetVertices().size(); i++)
-	{
-	}
-
-	return obj;
-
-	std::cout << "Exiting \"Load OBJ\"" << std::endl;
-}
-
-void DrawOBJ(OBJFile* obj)
-{
-	std::vector<double*> vertices = obj->GetVertices();
-	std::vector<int*> faces = obj->GetFaces();
-
-	for (int i = 0; i < faces.size(); i++)
-	{
-		glBegin(GL_TRIANGLES);
-		int* face = faces[i];
-		glVertex3d(vertices[face[0]][0], vertices[face[0]][1], vertices[face[0]][2]);
-		glVertex3d(vertices[face[1]][0], vertices[face[1]][1], vertices[face[1]][2]);
-		glVertex3d(vertices[face[2]][0], vertices[face[2]][1], vertices[face[2]][2]);
-		glEnd();
-	}
 }
 
 void DrawAxis(float distance)
@@ -167,14 +60,15 @@ void Display()
 
 	DrawAxis(20);
 
-	glPushMatrix();
-	DrawOBJ(cube);
-	glPopMatrix();
+	for (int i = 0; i < gameObjects.size(); i++)
+	{
+		gameObjects[i]->Render();
+	}
 
 	glutSwapBuffers();
 }
 
-void TestInit()
+void MapSetupTest()
 {
 	map = new GameMap(9, 25);
 	map->AddFood(4, 21);
@@ -186,27 +80,44 @@ void TestInit()
 	map->DisplayMap();
 }
 
+void KeyboardCallback(unsigned char ch, int x, int y)
+{
+	std::cout << ch << std::endl;
+	if (ch == 27)
+	{
+		glutLeaveMainLoop();
+	}
+}
+
 int main(int argc, char** argv)
 {
 	std::cout << "Program Start" << std::endl;
-	TestInit();
+	MapSetupTest();
 	glutInit(&argc, argv);
+	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitWindowPosition(500, 500);
 	glutInitWindowSize(500, 500);
 	glutCreateWindow("Snake");
 
-	MyInit();
+	glutKeyboardFunc(KeyboardCallback);
 
-	cube;
-	cube = LoadOBJ("Sphere.obj");
+	MyInit();
+	OBJFile* wall = OBJUtils::LoadOBJ("Cube.obj");
+	GameObject* cube = new GameObject(wall);
+	gameObjects.push_back(cube);
+
 	glutDisplayFunc(Display);
 	glutMainLoop();
 
 	delete map;
 
+	for (int i = 0; i < gameObjects.size(); i++)
+	{
+		delete gameObjects[i];
+	}
 
-	std::cout << "End" << std::endl;
+	std::cout << "Program End" << std::endl;
 
 	return 0;
 }
