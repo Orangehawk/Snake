@@ -151,10 +151,14 @@
   <ItemGroup>
     <ClCompile Include="GameMap.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="OBJFile.cpp" />
+    <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="Snake.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameMap.h" />
+    <ClInclude Include="OBJFile.h" />
+    <ClInclude Include="OBJLoader.h" />
     <ClInclude Include="Snake.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
