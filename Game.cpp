@@ -10,7 +10,15 @@
 #include "GameObject.h"
 
 
+//Constants
+const int mapSizeRows = 9;
+const int mapSizeColumns = 25;
+
+
+//Globals
+char lastInput;
 GameMap* map;
+GameObject* snake;
 
 std::vector<GameObject*> gameObjects;
 
@@ -21,12 +29,16 @@ void MyInit()
 	glLoadIdentity();
 
 	float fov = 70;
-	float aspect = 1;
+	float aspect = 2;
 	float nearVal = 0.1f;
 	float farVal = 1000;
-
+	float light_position[] = { -mapSizeRows / 2, 10, mapSizeColumns / 2, 0.0 };
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
 	gluPerspective(fov, aspect, nearVal, farVal);
-	gluLookAt(5, 3, 5, 0, 0, 0, 0, 1, 0);
+	//gluOrtho2D(0.0f, 1000.0f, 500.0f, 0.0f);
+	gluLookAt(-mapSizeRows / 2, 20, mapSizeColumns / 2, -mapSizeRows / 2, 0, mapSizeColumns / 2, 1, 0, 0);
 
 	glEnable(GL_DEPTH_TEST);
 }
@@ -59,23 +71,24 @@ void Display()
 	glLoadIdentity();
 
 	DrawAxis(20);
-
+	glColor3f(1.0f, 1.0f, 1.0f);
 	for (int i = 0; i < gameObjects.size(); i++)
 	{
 		gameObjects[i]->Render();
 	}
+
+	glPushMatrix();
+	glTranslated(2, 0, 0);
+	glutSolidCube(1);
+	glPopMatrix();
 
 	glutSwapBuffers();
 }
 
 void MapSetupTest()
 {
-	map = new GameMap(9, 25);
-	map->AddFood(4, 21);
-	map->AddFood(3, 6);
-	map->AddFood(6, 23);
-	map->AddFood(2, 1);
-	map->AddFood(0, 15);
+	map = new GameMap(mapSizeRows, mapSizeColumns);
+	map->AddFood(3, 15);
 
 	map->DisplayMap();
 }
@@ -87,6 +100,38 @@ void KeyboardCallback(unsigned char ch, int x, int y)
 	{
 		glutLeaveMainLoop();
 	}
+	else if (ch == 'w' || ch == 'W')
+	{
+		map->MoveSnake(GameMap::Direction::UP);
+		snake->Translate(1, 0, 0);
+		system("cls");
+		map->DisplayMap();
+		glutPostRedisplay();
+	}
+	else if (ch == 'a' || ch == 'A')
+	{
+		map->MoveSnake(GameMap::Direction::LEFT);
+		snake->Translate(0, 0, -1);
+		system("cls");
+		map->DisplayMap();
+		glutPostRedisplay();
+	}
+	else if (ch == 's' || ch == 'S')
+	{
+		map->MoveSnake(GameMap::Direction::DOWN);
+		snake->Translate(-1, 0, 0);
+		system("cls");
+		map->DisplayMap();
+		glutPostRedisplay();
+	}
+	else if (ch == 'd' || ch == 'D')
+	{
+		map->MoveSnake(GameMap::Direction::RIGHT);
+		snake->Translate(0, 0, 1);
+		system("cls");
+		map->DisplayMap();
+		glutPostRedisplay();
+	}
 }
 
 int main(int argc, char** argv)
@@ -97,15 +142,56 @@ int main(int argc, char** argv)
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitWindowPosition(500, 500);
-	glutInitWindowSize(500, 500);
+	glutInitWindowSize(1000, 500);
 	glutCreateWindow("Snake");
 
 	glutKeyboardFunc(KeyboardCallback);
 
 	MyInit();
-	OBJFile* wall = OBJUtils::LoadOBJ("Cube.obj");
-	GameObject* cube = new GameObject(wall);
-	gameObjects.push_back(cube);
+	OBJFile* wall = OBJUtils::LoadOBJ("SmolCube.obj");
+	OBJFile* food = OBJUtils::LoadOBJ("Sphere.obj");
+	snake = new GameObject(wall);
+	gameObjects.push_back(snake);
+	snake->SetPosition(map->GetSnake()->GetHead()->row, 0, map->GetSnake()->GetHead()->column);
+	//GameObject* obj = new GameObject(wall);
+	//gameObjects.push_back(cube);
+	int** n = map->GetMap();
+
+	double offsetX = -10;// (9.0 / 2.0);
+	double offsetZ = 0;// -(25.0 / 2.0);
+
+	for (int i = 0; i < map->GetRows(); i++)
+	{
+		int iconWall = map->GetIconWall();
+		int iconHead = map->GetIconHead();
+		int iconTail = map->GetIconTail();
+		int iconFood = map->GetIconFood();
+
+		for (int j = 0; j < map->GetColumns(); j++)
+		{
+			if (n[i][j] == iconWall)
+			{
+				GameObject* obj = new GameObject(wall);
+				obj->SetPosition(i + offsetX, 0, j + offsetZ);
+				gameObjects.push_back(obj);
+			}
+			else if (n[i][j] == iconHead)
+			{
+				snake->SetPosition(i + offsetX, 0, j + offsetZ);
+			}
+			else if (n[i][j] == iconTail)
+			{
+
+			}
+			else if (n[i][j] == iconFood)
+			{
+				//std::cout << "set " << i << ", " << j << " | pos " << i + offsetX << ", " << j + offsetZ << std::endl;
+				//GameObject* obj = new GameObject(food);
+				//obj->SetPosition(i + offsetX, 0, j + offsetZ);
+				//gameObjects.push_back(obj);
+			}
+		}
+	}
 
 	glutDisplayFunc(Display);
 	glutMainLoop();

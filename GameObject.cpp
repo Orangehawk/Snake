@@ -5,22 +5,35 @@
 
 GameObject::GameObject()
 {
-
+	isActive = true;
 }
 
 GameObject::GameObject(std::string fileName)
 {
+	isActive = true;
 	LoadModel(fileName);
 }
 
 GameObject::GameObject(OBJFile* objModel)
 {
+	isActive = true;
 	LoadModel(objModel);
 }
 
 void GameObject::Render()
 {
-	OBJUtils::DrawOBJ(model, position, rotation);
+	if (isActive)
+		OBJUtils::DrawOBJ(model, position, rotation);
+}
+
+void GameObject::SetActive(bool active)
+{
+	isActive = active;
+}
+
+bool GameObject::GetActive()
+{
+	return isActive;
 }
 
 void GameObject::LoadModel(std::string fileName)
@@ -34,21 +47,21 @@ void GameObject::LoadModel(OBJFile* objModel)
 		model = objModel;
 }
 
-void GameObject::SetPosition(int x, int y, int z)
+void GameObject::SetPosition(double x, double y, double z)
 {
 	position[0] = x;
 	position[1] = y;
 	position[2] = z;
 }
 
-void GameObject::Translate(int x, int y, int z)
+void GameObject::Translate(double x, double y, double z)
 {
 	position[0] += x;
 	position[1] += y;
 	position[2] += z;
 }
 
-void GameObject::SetRotation(int x, int y, int z)
+void GameObject::SetRotation(double x, double y, double z)
 {
 	std::cout << "Didn't bother with working this out yet, just don't rotate it, dummy =w=" << std::endl;
 	/*rotation[0] = x;
@@ -56,7 +69,7 @@ void GameObject::SetRotation(int x, int y, int z)
 	rotation[2] = z;*/
 }
 
-void GameObject::Rotate(int angle, int x, int y, int z)
+void GameObject::Rotate(double angle, double x, double y, double z)
 {
 	std::cout << "Didn't bother with working this out yet, just don't rotate it, dummy =w=" << std::endl;
 	/*rotation[0] = angle;

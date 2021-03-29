@@ -7,10 +7,10 @@ GameMap::GameMap(int mapRows, int mapColumns)
 	rows = mapRows;
 	columns = mapColumns;
 
-	gameMap = new char* [rows];
+	gameMap = new int* [rows];
 	for (int i = 0; i < rows; i++)
 	{
-		gameMap[i] = new char[columns];
+		gameMap[i] = new int[columns];
 	}
 
 	ClearMap();
@@ -18,6 +18,7 @@ GameMap::GameMap(int mapRows, int mapColumns)
 
 	std::cout << "Snake starts at row: " << (int)round(mapRows / 2) << ", column: " << (int)round(mapColumns / 2) << std::endl;
 	snake = new Snake((int)round(mapRows / 2), (int)round(mapColumns / 2));
+	food = new GameObject("Sphere.obj");
 	gameMap[snake->GetHead()->row][snake->GetHead()->column] = iconHead;
 }
 
@@ -31,6 +32,26 @@ GameMap::~GameMap()
 	delete snake;
 }
 
+int** GameMap::GetMap() const
+{
+	return gameMap;
+}
+
+int GameMap::GetRows()
+{
+	return rows;
+}
+
+int GameMap::GetColumns()
+{
+	return columns;
+}
+
+Snake* GameMap::GetSnake() const
+{
+	return snake;
+}
+
 void GameMap::AddSnake(int row, int column)
 {
 
@@ -40,6 +61,8 @@ bool GameMap::AddFood(int row, int column)
 {
 	if (gameMap[row][column] == iconEmpty)
 	{
+		food->SetPosition(row, 0, column);
+		food->SetActive(true);
 		gameMap[row][column] = iconFood;
 		return true;
 	}
@@ -51,8 +74,16 @@ bool GameMap::AddFood(int row, int column)
 
 bool GameMap::RemoveFood(int row, int column)
 {
-	std::cout << "RemoveFood: Not Implemented Yet" << std::endl;
-	return false;
+	if (gameMap[row][column] == iconFood)
+	{
+		food->SetActive(false);
+		gameMap[row][column] = iconEmpty;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 void GameMap::ClearMap()
@@ -76,6 +107,26 @@ void GameMap::DisplayMap()
 		}
 		std::cout << std::endl;
 	}
+}
+
+int GameMap::GetIconWall()
+{
+	return iconWall;
+}
+
+int GameMap::GetIconHead()
+{
+	return iconHead;
+}
+
+int GameMap::GetIconTail()
+{
+	return iconTail;
+}
+
+int GameMap::GetIconFood()
+{
+	return iconFood;
 }
 
 void GameMap::MoveSnake(Direction dir)
@@ -107,14 +158,15 @@ void GameMap::MoveSnake(Direction dir)
 		std::cout << "Invalid Direction" << std::endl;
 	}
 
-	if (CheckCell(newRow, newColumn) == 1 || CheckCell(newRow, newColumn) == 2)
+	if (CheckCell(newRow, newColumn) == iconWall || CheckCell(newRow, newColumn) == iconTail)
 	{
 		std::cout << "GameOver" << std::endl;
 		exit(0);
 	}
-	else if (CheckCell(newRow, newColumn) == 3)
+	else if (CheckCell(newRow, newColumn) == iconFood)
 	{
 		snake->AddTail();
+		RemoveFood(newRow, newColumn);
 	}
 
 	snake->MoveSnake(newRow, newColumn);
@@ -166,13 +218,13 @@ void GameMap::CreateWalls()
 int GameMap::CheckCell(int row, int column)
 {
 	if (gameMap[row][column] == iconEmpty)
-		return 0;
+		return iconEmpty;
 	else if (gameMap[row][column] == iconWall)
-		return 1;
+		return iconWall;
 	else if (gameMap[row][column] == iconTail)
-		return 2;
+		return iconTail;
 	else if (gameMap[row][column] == iconFood)
-		return 3;
+		return iconFood;
 	else
 		return -1;
 }
