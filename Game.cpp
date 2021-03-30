@@ -34,7 +34,7 @@ void SetupGlut()
 	float aspect = 2;
 	float nearVal = 0.1f;
 	float farVal = 1000;
-	float light_position[] = { -mapSizeRows / 2, 10, mapSizeColumns / 2, 0.0 };
+	float light_position[] = { 0.5, 1, 0.5, 0.0 };
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
@@ -101,7 +101,6 @@ void Display()
 
 	mapRenderer->UpdateMap();
 	glPushMatrix();
-	glTranslatef(0, 0, 0);
 	glRotatef(180, 0, 0, 1);
 	RenderManager::Render();
 	glPopMatrix();

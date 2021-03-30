@@ -29,8 +29,8 @@ private:
 
 	double offset[3] = { 0 };
 
-	const std::string modelWall = "SmolCube.obj";
-	const std::string modelHead = "SmolCube.obj";
-	const std::string modelTail = "SmolCube.obj";
-	const std::string modelFood = "Sphere.obj";
+	const std::string modelWall = "Models/Wall.obj";
+	const std::string modelHead = "Models/SnakeHead.obj";
+	const std::string modelTail = "Models/SnakeTail.obj";
+	const std::string modelFood = "Models/Food.obj";
 };
