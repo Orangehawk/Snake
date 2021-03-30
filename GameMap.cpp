@@ -1,5 +1,6 @@
 #include "GameMap.h"
 #include <iostream>
+#include <random>
 
 
 GameMap::GameMap(int mapRows, int mapColumns)
@@ -163,6 +164,21 @@ void GameMap::MoveSnake(Direction dir)
 	{
 		snake->AddTail();
 		RemoveFood(newRow, newColumn);
+		std::random_device rd;
+		std::mt19937 mt(rd());
+		std::uniform_real_distribution<double> randRow(1.0, rows);
+		std::uniform_real_distribution<double> randColumn(1.0, columns);
+
+		int r, c;
+
+		do
+		{
+			r = randRow(mt);
+			c = randColumn(mt);
+		} while (CheckCell(r, c) != iconEmpty);
+
+
+		AddFood(r, c);
 	}
 
 	snake->MoveSnake(newRow, newColumn);

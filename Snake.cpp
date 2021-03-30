@@ -21,7 +21,11 @@ Snake::~Snake()
 	do
 	{
 		if (current->next != nullptr)
+		{
 			delete current->next;
+			if (current->prev != nullptr)
+				current = current->prev;
+		}
 	} while (current->prev != nullptr);
 
 	delete current;
