@@ -15,14 +15,16 @@
 //Constants
 const int mapSizeRows = 9;
 const int mapSizeColumns = 25;
+const int updateTimer = 400;
 
 //Globals
-char lastInput;
+char lastInput = ' ';
+bool lockInput = false;
 GameMap* map;
 MapRenderer* mapRenderer;
 
 
-void MyInit()
+void SetupGlut()
 {
 	glClearColor(0, 0, 0, 0);
 	glMatrixMode(GL_PROJECTION);
@@ -109,47 +111,62 @@ void Display()
 
 void Move(int value)
 {
-	glutTimerFunc(100, Move, -1);
+	glutTimerFunc(updateTimer, Move, -1);
 
+	if (lastInput == 'w' || lastInput == 'W')
+	{
+		map->MoveSnake(GameMap::Direction::UP);
+	}
+	else if (lastInput == 'a' || lastInput == 'A')
+	{
+		map->MoveSnake(GameMap::Direction::LEFT);
+	}
+	else if (lastInput == 's' || lastInput == 'S')
+	{
+		map->MoveSnake(GameMap::Direction::DOWN);
+	}
+	else if (lastInput == 'd' || lastInput == 'D')
+	{
+		map->MoveSnake(GameMap::Direction::RIGHT);
+	}
 
-
+	lockInput = false;
+	system("cls");
+	map->DisplayMap();
 	glutPostRedisplay();
 }
 
 void KeyboardCallback(unsigned char ch, int x, int y)
 {
-	std::cout << ch << std::endl;
-	if (ch == 27)
+	if (!lockInput)
 	{
-		glutLeaveMainLoop();
-	}
-	else if (ch == 'w' || ch == 'W')
-	{
-		map->MoveSnake(GameMap::Direction::UP);
-		system("cls");
-		map->DisplayMap();
-		glutPostRedisplay();
-	}
-	else if (ch == 'a' || ch == 'A')
-	{
-		map->MoveSnake(GameMap::Direction::LEFT);
-		system("cls");
-		map->DisplayMap();
-		glutPostRedisplay();
-	}
-	else if (ch == 's' || ch == 'S')
-	{
-		map->MoveSnake(GameMap::Direction::DOWN);
-		system("cls");
-		map->DisplayMap();
-		glutPostRedisplay();
-	}
-	else if (ch == 'd' || ch == 'D')
-	{
-		map->MoveSnake(GameMap::Direction::RIGHT);
-		system("cls");
-		map->DisplayMap();
-		glutPostRedisplay();
+		std::cout << ch << std::endl;
+		if (ch == 27)
+		{
+			glutLeaveMainLoop();
+		}
+		else if (ch == 'w' || ch == 'W')
+		{
+			if (lastInput != 's' && lastInput != 'S')
+				lastInput = ch;
+		}
+		else if (ch == 'a' || ch == 'A')
+		{
+			if (lastInput != 'd' && lastInput != 'D')
+				lastInput = ch;
+		}
+		else if (ch == 's' || ch == 'S')
+		{
+			if (lastInput != 'w' && lastInput != 'W')
+				lastInput = ch;
+		}
+		else if (ch == 'd' || ch == 'D')
+		{
+			if (lastInput != 'a' && lastInput != 'A')
+				lastInput = ch;
+		}
+
+		lockInput = true;
 	}
 }
 
@@ -167,9 +184,9 @@ int main(int argc, char** argv)
 
 	glutKeyboardFunc(KeyboardCallback);
 
-	MyInit();
+	SetupGlut();
 	glutDisplayFunc(Display);
-	glutTimerFunc(100, Move, -1);
+	glutTimerFunc(updateTimer, Move, -1);
 	glutMainLoop();
 
 	Shutdown();
