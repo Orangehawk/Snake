@@ -17,18 +17,18 @@ public:
 	GameMap(int mapRows, int mapColumns);
 	~GameMap();
 	int** GetMap() const;
-	int GetRows();
-	int GetColumns();
+	int GetRows() const;
+	int GetColumns() const;
 	Snake* GetSnake() const;
 	void AddSnake(int row, int column);
 	bool AddFood(int row, int column);
 	bool RemoveFood(int row, int column);
 	void ClearMap();
 	void DisplayMap();
-	int GetIconWall();
-	int GetIconHead();
-	int GetIconTail();
-	int GetIconFood();
+	int GetIconWall() const;
+	int GetIconHead() const;
+	int GetIconTail() const;
+	int GetIconFood() const;
 	void MoveSnake(Direction dir);
 	//void UpdateSnake(Snake* snake);
 
@@ -37,7 +37,6 @@ private:
 	int columns;
 	int** gameMap; 
 	Snake* snake;
-	GameObject* food;
 
 	int iconEmpty = 0;
 	int iconWall = 1;
@@ -45,9 +44,7 @@ private:
 	int iconTail = 3;
 	int iconFood = 4;
 
-
 	void CreateWalls();
-	//0 - empty, 1 - wall, 2 - player head, 3 - player, 4 - food
 	int CheckCell(int row, int column);
 };
 

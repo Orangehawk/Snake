@@ -23,7 +23,6 @@ OBJFile* OBJUtils::LoadOBJ(std::string fileName)
 	std::cout << totalFileLines << std::endl;
 
 	OBJFile* obj = new OBJFile();
-	int count = 0;
 	while (getline(infile, line, '\n'))
 	{
 		std::istringstream is(line);
@@ -108,13 +107,11 @@ OBJFile* OBJUtils::LoadOBJ(std::string fileName)
 		}
 		else
 		{
-			//std::cout << "unsupported token" << std::endl;
+			std::cout << "unsupported token" << std::endl;
 		}
 	}
 
 	return obj;
-
-	std::cout << "Exiting \"Load OBJ\"" << std::endl;
 }
 
 void OBJUtils::DrawOBJ(OBJFile* obj, double* position = nullptr, double* rotation = nullptr)

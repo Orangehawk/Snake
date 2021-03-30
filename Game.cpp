@@ -9,19 +9,18 @@
 #include "OBJUtils.h"
 #include "GameObject.h"
 #include "RenderManager.h"
+#include "MapRenderer.h"
 
 
 //Constants
 const int mapSizeRows = 9;
 const int mapSizeColumns = 25;
 
-
 //Globals
 char lastInput;
 GameMap* map;
-GameObject* snake;
+MapRenderer* mapRenderer;
 
-//std::vector<GameObject*> gameObjects;
 
 void MyInit()
 {
@@ -44,6 +43,29 @@ void MyInit()
 	glEnable(GL_DEPTH_TEST);
 }
 
+void Initialise()
+{
+	RenderManager::Initialise();
+
+	map = new GameMap(mapSizeRows, mapSizeColumns);
+	map->AddFood(3, 15);
+	map->DisplayMap();
+
+	mapRenderer = new MapRenderer(map);
+}
+
+void Run()
+{
+
+}
+
+void Shutdown()
+{
+	delete map;
+	delete mapRenderer;
+	RenderManager::Shutdown();
+}
+
 void DrawAxis(float distance)
 {
 	glBegin(GL_LINES);
@@ -63,6 +85,8 @@ void DrawAxis(float distance)
 	glVertex3f(0.0, 0.0, 0.0);
 	glVertex3f(0.0, 0.0, distance);
 	glEnd();
+
+	glColor3f(1.0f, 1.0f, 1.0f);
 }
 
 void Display()
@@ -72,22 +96,24 @@ void Display()
 	glLoadIdentity();
 
 	DrawAxis(20);
-	glColor3f(1.0f, 1.0f, 1.0f);
 
+	mapRenderer->UpdateMap();
 	glPushMatrix();
-	glTranslatef(-10, 0, 0);
+	glTranslatef(0, 0, 0);
+	glRotatef(180, 0, 0, 1);
 	RenderManager::Render();
 	glPopMatrix();
 
 	glutSwapBuffers();
 }
 
-void MapSetupTest()
+void Move(int value)
 {
-	map = new GameMap(mapSizeRows, mapSizeColumns);
-	map->AddFood(3, 15);
+	glutTimerFunc(100, Move, -1);
 
-	map->DisplayMap();
+
+
+	glutPostRedisplay();
 }
 
 void KeyboardCallback(unsigned char ch, int x, int y)
@@ -100,7 +126,6 @@ void KeyboardCallback(unsigned char ch, int x, int y)
 	else if (ch == 'w' || ch == 'W')
 	{
 		map->MoveSnake(GameMap::Direction::UP);
-		snake->Translate(1, 0, 0);
 		system("cls");
 		map->DisplayMap();
 		glutPostRedisplay();
@@ -108,7 +133,6 @@ void KeyboardCallback(unsigned char ch, int x, int y)
 	else if (ch == 'a' || ch == 'A')
 	{
 		map->MoveSnake(GameMap::Direction::LEFT);
-		snake->Translate(0, 0, -1);
 		system("cls");
 		map->DisplayMap();
 		glutPostRedisplay();
@@ -116,7 +140,6 @@ void KeyboardCallback(unsigned char ch, int x, int y)
 	else if (ch == 's' || ch == 'S')
 	{
 		map->MoveSnake(GameMap::Direction::DOWN);
-		snake->Translate(-1, 0, 0);
 		system("cls");
 		map->DisplayMap();
 		glutPostRedisplay();
@@ -124,35 +147,17 @@ void KeyboardCallback(unsigned char ch, int x, int y)
 	else if (ch == 'd' || ch == 'D')
 	{
 		map->MoveSnake(GameMap::Direction::RIGHT);
-		snake->Translate(0, 0, 1);
 		system("cls");
 		map->DisplayMap();
 		glutPostRedisplay();
 	}
 }
 
-void Initialise()
-{
-	RenderManager::Initialise();
-}
-
-void Run()
-{
-
-}
-
-void Shutdown()
-{
-	RenderManager::Shutdown();
-}
-
 int main(int argc, char** argv)
 {
 	std::cout << "Program Start" << std::endl;
-
 	Initialise();
 
-	MapSetupTest();
 	glutInit(&argc, argv);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
@@ -163,51 +168,11 @@ int main(int argc, char** argv)
 	glutKeyboardFunc(KeyboardCallback);
 
 	MyInit();
-	OBJFile* wall = OBJUtils::LoadOBJ("SmolCube.obj");
-	OBJFile* food = OBJUtils::LoadOBJ("Sphere.obj");
-	snake = new GameObject(wall);
-	snake->SetPosition(map->GetSnake()->GetHead()->row, 0, map->GetSnake()->GetHead()->column);
-	int** n = map->GetMap();
-
-	for (int i = 0; i < map->GetRows(); i++)
-	{
-		int iconWall = map->GetIconWall();
-		int iconHead = map->GetIconHead();
-		int iconTail = map->GetIconTail();
-		int iconFood = map->GetIconFood();
-
-		for (int j = 0; j < map->GetColumns(); j++)
-		{
-			if (n[i][j] == iconWall)
-			{
-				GameObject* obj = new GameObject(wall);
-				obj->SetPosition(i, 0, j);
-			}
-			else if (n[i][j] == iconHead)
-			{
-				snake->SetPosition(i, 0, j);
-			}
-			else if (n[i][j] == iconTail)
-			{
-
-			}
-			else if (n[i][j] == iconFood)
-			{
-				//std::cout << "set " << i << ", " << j << " | pos " << i + offsetX << ", " << j + offsetZ << std::endl;
-				//GameObject* obj = new GameObject(food);
-				//obj->SetPosition(i + offsetX, 0, j + offsetZ);
-				//gameObjects.push_back(obj);
-			}
-		}
-	}
-
 	glutDisplayFunc(Display);
+	glutTimerFunc(100, Move, -1);
 	glutMainLoop();
 
-	delete map;
-
 	Shutdown();
-
 	std::cout << "Program End" << std::endl;
 
 	return 0;

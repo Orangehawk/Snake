@@ -18,7 +18,6 @@ GameMap::GameMap(int mapRows, int mapColumns)
 
 	std::cout << "Snake starts at row: " << (int)round(mapRows / 2) << ", column: " << (int)round(mapColumns / 2) << std::endl;
 	snake = new Snake((int)round(mapRows / 2), (int)round(mapColumns / 2));
-	food = new GameObject("Sphere.obj");
 	gameMap[snake->GetHead()->row][snake->GetHead()->column] = iconHead;
 }
 
@@ -37,12 +36,12 @@ int** GameMap::GetMap() const
 	return gameMap;
 }
 
-int GameMap::GetRows()
+int GameMap::GetRows() const
 {
 	return rows;
 }
 
-int GameMap::GetColumns()
+int GameMap::GetColumns() const
 {
 	return columns;
 }
@@ -61,8 +60,6 @@ bool GameMap::AddFood(int row, int column)
 {
 	if (gameMap[row][column] == iconEmpty)
 	{
-		food->SetPosition(row, 0, column);
-		food->SetActive(true);
 		gameMap[row][column] = iconFood;
 		return true;
 	}
@@ -76,7 +73,6 @@ bool GameMap::RemoveFood(int row, int column)
 {
 	if (gameMap[row][column] == iconFood)
 	{
-		food->SetActive(false);
 		gameMap[row][column] = iconEmpty;
 		return true;
 	}
@@ -109,22 +105,22 @@ void GameMap::DisplayMap()
 	}
 }
 
-int GameMap::GetIconWall()
+int GameMap::GetIconWall() const
 {
 	return iconWall;
 }
 
-int GameMap::GetIconHead()
+int GameMap::GetIconHead() const
 {
 	return iconHead;
 }
 
-int GameMap::GetIconTail()
+int GameMap::GetIconTail() const
 {
 	return iconTail;
 }
 
-int GameMap::GetIconFood()
+int GameMap::GetIconFood() const
 {
 	return iconFood;
 }
