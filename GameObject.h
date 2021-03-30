@@ -18,6 +18,7 @@ public:
 	void SetRotation(double x, double y, double z);
 	void Rotate(double angle, double x, double y, double z);
 private:
+	void Init();
 	bool isActive;
 	double position[3] = { 0 };
 	double rotation[4] = { 0 };

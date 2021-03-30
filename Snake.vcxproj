@@ -153,16 +153,22 @@
     <ClCompile Include="GameMap.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="MapRenderer.cpp" />
+    <ClCompile Include="ModelManager.cpp" />
     <ClCompile Include="OBJFile.cpp" />
     <ClCompile Include="OBJUtils.cpp" />
+    <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="Snake.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileUtils.h" />
     <ClInclude Include="GameMap.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="MapRenderer.h" />
+    <ClInclude Include="ModelManager.h" />
     <ClInclude Include="OBJFile.h" />
     <ClInclude Include="OBJUtils.h" />
+    <ClInclude Include="RenderManager.h" />
     <ClInclude Include="Snake.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

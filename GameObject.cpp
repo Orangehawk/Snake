@@ -1,22 +1,23 @@
 #include "GameObject.h"
 #include <iostream>
 #include "OBJUtils.h"
+#include "RenderManager.h"
 
 
 GameObject::GameObject()
 {
-	isActive = true;
+	Init();
 }
 
 GameObject::GameObject(std::string fileName)
 {
-	isActive = true;
+	Init();
 	LoadModel(fileName);
 }
 
 GameObject::GameObject(OBJFile* objModel)
 {
-	isActive = true;
+	Init();
 	LoadModel(objModel);
 }
 
@@ -76,4 +77,10 @@ void GameObject::Rotate(double angle, double x, double y, double z)
 	rotation[1] = x;
 	rotation[2] = y;
 	rotation[3] = z;*/
+}
+
+void GameObject::Init()
+{
+	isActive = true;
+	RenderManager::Register(this);
 }

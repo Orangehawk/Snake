@@ -3,7 +3,7 @@
 #include "OBJFile.h"
 
 
-static class OBJUtils
+class OBJUtils
 {
 public:
 	static OBJFile* LoadOBJ(std::string fileName);

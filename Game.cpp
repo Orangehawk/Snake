@@ -8,6 +8,7 @@
 #include "GameMap.h"
 #include "OBJUtils.h"
 #include "GameObject.h"
+#include "RenderManager.h"
 
 
 //Constants
@@ -20,7 +21,7 @@ char lastInput;
 GameMap* map;
 GameObject* snake;
 
-std::vector<GameObject*> gameObjects;
+//std::vector<GameObject*> gameObjects;
 
 void MyInit()
 {
@@ -72,14 +73,10 @@ void Display()
 
 	DrawAxis(20);
 	glColor3f(1.0f, 1.0f, 1.0f);
-	for (int i = 0; i < gameObjects.size(); i++)
-	{
-		gameObjects[i]->Render();
-	}
 
 	glPushMatrix();
-	glTranslated(2, 0, 0);
-	glutSolidCube(1);
+	glTranslatef(-10, 0, 0);
+	RenderManager::Render();
 	glPopMatrix();
 
 	glutSwapBuffers();
@@ -134,9 +131,27 @@ void KeyboardCallback(unsigned char ch, int x, int y)
 	}
 }
 
+void Initialise()
+{
+	RenderManager::Initialise();
+}
+
+void Run()
+{
+
+}
+
+void Shutdown()
+{
+	RenderManager::Shutdown();
+}
+
 int main(int argc, char** argv)
 {
 	std::cout << "Program Start" << std::endl;
+
+	Initialise();
+
 	MapSetupTest();
 	glutInit(&argc, argv);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
@@ -151,14 +166,8 @@ int main(int argc, char** argv)
 	OBJFile* wall = OBJUtils::LoadOBJ("SmolCube.obj");
 	OBJFile* food = OBJUtils::LoadOBJ("Sphere.obj");
 	snake = new GameObject(wall);
-	gameObjects.push_back(snake);
 	snake->SetPosition(map->GetSnake()->GetHead()->row, 0, map->GetSnake()->GetHead()->column);
-	//GameObject* obj = new GameObject(wall);
-	//gameObjects.push_back(cube);
 	int** n = map->GetMap();
-
-	double offsetX = -10;// (9.0 / 2.0);
-	double offsetZ = 0;// -(25.0 / 2.0);
 
 	for (int i = 0; i < map->GetRows(); i++)
 	{
@@ -172,12 +181,11 @@ int main(int argc, char** argv)
 			if (n[i][j] == iconWall)
 			{
 				GameObject* obj = new GameObject(wall);
-				obj->SetPosition(i + offsetX, 0, j + offsetZ);
-				gameObjects.push_back(obj);
+				obj->SetPosition(i, 0, j);
 			}
 			else if (n[i][j] == iconHead)
 			{
-				snake->SetPosition(i + offsetX, 0, j + offsetZ);
+				snake->SetPosition(i, 0, j);
 			}
 			else if (n[i][j] == iconTail)
 			{
@@ -198,10 +206,7 @@ int main(int argc, char** argv)
 
 	delete map;
 
-	for (int i = 0; i < gameObjects.size(); i++)
-	{
-		delete gameObjects[i];
-	}
+	Shutdown();
 
 	std::cout << "Program End" << std::endl;
 

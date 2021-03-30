@@ -92,7 +92,7 @@ OBJFile* OBJUtils::LoadOBJ(std::string fileName)
 
 
 				getline(is2, token, '/');
-				vertices[i] = std::stof(token) - 1;
+				vertices[i] = std::stoi(token) - 1;
 
 				if (getline(is2, token, '/'))
 				{
@@ -100,7 +100,7 @@ OBJFile* OBJUtils::LoadOBJ(std::string fileName)
 				}
 
 				if (getline(is2, token, '/'))
-					normalVertices[i] = std::stof(token) - 1;
+					normalVertices[i] = std::stoi(token) - 1;
 			}
 
 			obj->AddFace(vertices[0], vertices[1], vertices[2]);
@@ -134,7 +134,7 @@ void OBJUtils::DrawOBJ(OBJFile* obj, double* position = nullptr, double* rotatio
 		if (rotation != nullptr)
 			glTranslated(rotation[0], rotation[1], rotation[2]);
 
-		for (int i = 0; i < faces.size(); i++)
+		for (unsigned int i = 0; i < faces.size(); i++)
 		{
 			int* face = faces[i];
 			int* normalFace = normalFaces[i];
