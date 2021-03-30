@@ -17,7 +17,6 @@ GameMap::GameMap(int mapRows, int mapColumns)
 	ClearMap();
 	CreateWalls();
 
-	std::cout << "Snake starts at row: " << (int)round(mapRows / 2) << ", column: " << (int)round(mapColumns / 2) << std::endl;
 	snake = new Snake((int)round(mapRows / 2), (int)round(mapColumns / 2));
 	gameMap[snake->GetHead()->row][snake->GetHead()->column] = iconHead;
 }
@@ -157,7 +156,7 @@ void GameMap::MoveSnake(Direction dir)
 
 	if (CheckCell(newRow, newColumn) == iconWall || CheckCell(newRow, newColumn) == iconTail)
 	{
-		std::cout << "GameOver" << std::endl;
+		std::cout << "Game Over" << std::endl;
 		exit(0);
 	}
 	else if (CheckCell(newRow, newColumn) == iconFood)
@@ -177,7 +176,6 @@ void GameMap::MoveSnake(Direction dir)
 			c = randColumn(mt);
 		} while (CheckCell(r, c) != iconEmpty);
 
-
 		AddFood(r, c);
 	}
 
@@ -186,19 +184,6 @@ void GameMap::MoveSnake(Direction dir)
 	currentHead = snake->GetHead();
 	gameMap[currentHead->row][currentHead->column] = iconHead;
 }
-
-//void GameMap::UpdateSnake(Snake* snake)
-//{
-//	Tail* currentHead = snake->GetHead();
-//	Tail* currentTailEnd = snake->GetTail();
-//	Tail* newHead = snake->GetHead();
-//
-//	gameMap[currentHead->row][currentHead->column] = iconTail;
-//	gameMap[currentTailEnd->row][currentTailEnd->column] = iconEmpty;
-//	gameMap[newHead->row][newHead->column] = iconHead;
-//
-//	currentSnake = snake;
-//}
 
 void GameMap::CreateWalls()
 {

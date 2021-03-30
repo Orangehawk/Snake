@@ -107,7 +107,7 @@ OBJFile* OBJUtils::LoadOBJ(std::string fileName)
 		}
 		else
 		{
-			std::cout << "unsupported token" << std::endl;
+			//std::cout << "unsupported token" << std::endl;
 		}
 	}
 

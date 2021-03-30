@@ -51,19 +51,6 @@ void Snake::MoveSnake(int row, int column)
 		head->row = row;
 		head->column = column;
 	}
-
-	//Tail* currentTail = tailLast;
-	//Tail* nextTail = currentTail->prev;
-
-	////Might just remove endtail and add head, would save performance
-
-	//for (int i = 0; i < tailSize; i++)
-	//{
-	//	currentTail->row = nextTail->row;
-	//	currentTail->column = nextTail->column;
-	//	currentTail = nextTail;
-	//	nextTail = nextTail->prev;
-	//}
 }
 
 Tail* Snake::GetHead() const

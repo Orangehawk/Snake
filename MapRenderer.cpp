@@ -51,31 +51,8 @@ void MapRenderer::SetOffset(double x, double y, double z)
 	offset[2] = z;
 }
 
-//void MapRenderer::SetModelWall(OBJFile* wall)
-//{
-//
-//}
-//
-//void MapRenderer::SetModelSnakeHead(OBJFile* snakeHead)
-//{
-//
-//}
-//
-//void MapRenderer::SetModelSnakeTail(OBJFile* snakeTail)
-//{
-//
-//}
-//
-//void MapRenderer::SetModelFood(OBJFile* food)
-//{
-//
-//}
-
-#include <iostream>
-
 void MapRenderer::UpdateMap()
 {
-	std::cout << "update enter" << std::endl;
 	int** mapRaw = storedMap->GetMap();
 	
 	int snakeIterator = 1;
@@ -112,7 +89,4 @@ void MapRenderer::UpdateMap()
 			}
 		}
 	}
-
-	std::cout << snake.size() << std::endl;
-	std::cout << "update exit" << std::endl;
 }

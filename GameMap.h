@@ -30,7 +30,6 @@ public:
 	int GetIconTail() const;
 	int GetIconFood() const;
 	void MoveSnake(Direction dir);
-	//void UpdateSnake(Snake* snake);
 
 private:
 	int rows;
@@ -47,15 +46,3 @@ private:
 	void CreateWalls();
 	int CheckCell(int row, int column);
 };
-
-/*
------Map Example-----
-std::cout << "#########################" << std::endl;
-std::cout << "#                 o     #" << std::endl;
-std::cout << "#              oooo     #" << std::endl;
-std::cout << "#      @   Ooooo        #" << std::endl;
-std::cout << "#                       #" << std::endl;
-std::cout << "#                       #" << std::endl;
-std::cout << "#                       #" << std::endl;
-std::cout << "#########################" << std::endl;
-*/

@@ -39,7 +39,6 @@ void SetupGlut()
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 	gluPerspective(fov, aspect, nearVal, farVal);
-	//gluOrtho2D(0.0f, 1000.0f, 500.0f, 0.0f);
 	gluLookAt(-mapSizeRows / 2, 20, mapSizeColumns / 2, -mapSizeRows / 2, 0, mapSizeColumns / 2, 1, 0, 0);
 
 	glEnable(GL_DEPTH_TEST);
@@ -68,36 +67,11 @@ void Shutdown()
 	RenderManager::Shutdown();
 }
 
-void DrawAxis(float distance)
-{
-	glBegin(GL_LINES);
-	glColor3f(1.0f, 0.0f, 0.0f);
-	glVertex3f(0.0, 0.0, 0.0);
-	glVertex3f(distance, 0.0, 0.0);
-	glEnd();
-
-	glBegin(GL_LINES);
-	glColor3f(0.0f, 1.0f, 0.0f);
-	glVertex3f(0.0, 0.0, 0.0);
-	glVertex3f(0.0, distance, 0.0);
-	glEnd();
-
-	glBegin(GL_LINES);
-	glColor3f(0.0f, 0.0f, 1.0f);
-	glVertex3f(0.0, 0.0, 0.0);
-	glVertex3f(0.0, 0.0, distance);
-	glEnd();
-
-	glColor3f(1.0f, 1.0f, 1.0f);
-}
-
 void Display()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
-	DrawAxis(20);
 
 	mapRenderer->UpdateMap();
 	glPushMatrix();
@@ -139,7 +113,6 @@ void KeyboardCallback(unsigned char ch, int x, int y)
 {
 	if (!lockInput)
 	{
-		std::cout << ch << std::endl;
 		if (ch == 27)
 		{
 			glutLeaveMainLoop();
@@ -171,7 +144,6 @@ void KeyboardCallback(unsigned char ch, int x, int y)
 
 int main(int argc, char** argv)
 {
-	std::cout << "Program Start" << std::endl;
 	Initialise();
 
 	glutInit(&argc, argv);
@@ -189,7 +161,6 @@ int main(int argc, char** argv)
 	glutMainLoop();
 
 	Shutdown();
-	std::cout << "Program End" << std::endl;
 
 	return 0;
 }
