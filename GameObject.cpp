@@ -1,6 +1,7 @@
 #include "GameObject.h"
 #include <iostream>
 #include "OBJUtils.h"
+#include "ModelManager.h"
 #include "RenderManager.h"
 
 
@@ -39,7 +40,7 @@ bool GameObject::GetActive()
 
 void GameObject::LoadModel(std::string fileName)
 {
-	model = OBJUtils::LoadOBJ(fileName);
+	model = ModelManager::GetModel(fileName);
 }
 
 void GameObject::LoadModel(OBJFile* objModel)

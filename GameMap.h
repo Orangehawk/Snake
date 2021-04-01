@@ -20,7 +20,7 @@ public:
 	int GetRows() const;
 	int GetColumns() const;
 	Snake* GetSnake() const;
-	void AddSnake(int row, int column);
+	//void AddSnake(int row, int column);
 	bool AddFood(int row, int column);
 	bool RemoveFood(int row, int column);
 	void ClearMap();
@@ -29,7 +29,7 @@ public:
 	int GetIconHead() const;
 	int GetIconTail() const;
 	int GetIconFood() const;
-	void MoveSnake(Direction dir);
+	bool MoveSnake(Direction dir);
 
 private:
 	int rows;

@@ -4,6 +4,7 @@
 int RenderManager::incrementalID;
 std::map<int, GameObject*> RenderManager::gameObjects;
 
+
 void RenderManager::Initialise()
 {
     incrementalID = 0;

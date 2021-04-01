@@ -9,6 +9,7 @@
 #include "OBJUtils.h"
 #include "GameObject.h"
 #include "RenderManager.h"
+#include "ModelManager.h"
 #include "MapRenderer.h"
 
 
@@ -23,12 +24,8 @@ bool lockInput = false;
 GameMap* map;
 MapRenderer* mapRenderer;
 
-
-void SetupGlut()
-{
-	
-}
-
+//Settings
+bool EnableConsoleGame = true;
 
 
 void Display()
@@ -36,6 +33,12 @@ void Display()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
+	if (EnableConsoleGame)
+	{
+		system("cls");
+		map->DisplayMap();
+	}
 
 	mapRenderer->UpdateMap();
 	glPushMatrix();
@@ -50,27 +53,31 @@ void Move(int value)
 {
 	glutTimerFunc(updateTimer, Move, -1);
 
+	bool success = true;
+
 	if (lastInput == 'w' || lastInput == 'W')
 	{
-		map->MoveSnake(GameMap::Direction::UP);
+		success = map->MoveSnake(GameMap::Direction::UP);
 	}
 	else if (lastInput == 'a' || lastInput == 'A')
 	{
-		map->MoveSnake(GameMap::Direction::LEFT);
+		success = map->MoveSnake(GameMap::Direction::LEFT);
 	}
 	else if (lastInput == 's' || lastInput == 'S')
 	{
-		map->MoveSnake(GameMap::Direction::DOWN);
+		success = map->MoveSnake(GameMap::Direction::DOWN);
 	}
 	else if (lastInput == 'd' || lastInput == 'D')
 	{
-		map->MoveSnake(GameMap::Direction::RIGHT);
+		success = map->MoveSnake(GameMap::Direction::RIGHT);
 	}
 
 	lockInput = false;
-	system("cls");
-	map->DisplayMap();
 	glutPostRedisplay();
+
+	//Game over
+	if (!success)
+		glutLeaveMainLoop();
 }
 
 void KeyboardCallback(unsigned char ch, int x, int y)
@@ -106,16 +113,8 @@ void KeyboardCallback(unsigned char ch, int x, int y)
 	}
 }
 
-void Initialise(int& argc, char** argv)
+void SetupGlut(int& argc, char** argv)
 {
-	RenderManager::Initialise();
-
-	map = new GameMap(mapSizeRows, mapSizeColumns);
-	map->AddFood(3, 15);
-	map->DisplayMap();
-
-	mapRenderer = new MapRenderer(map);
-
 	glutInit(&argc, argv);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
@@ -148,6 +147,21 @@ void Initialise(int& argc, char** argv)
 	glutTimerFunc(updateTimer, Move, -1);
 }
 
+void Initialise(int& argc, char** argv)
+{
+	RenderManager::Initialise();
+
+	map = new GameMap(mapSizeRows, mapSizeColumns);
+	map->AddFood(3, 15);
+
+	if(EnableConsoleGame)
+		map->DisplayMap();
+
+	mapRenderer = new MapRenderer(map);
+
+	SetupGlut(argc, argv);
+}
+
 void Run()
 {
 	glutMainLoop();
@@ -158,6 +172,7 @@ void Shutdown()
 	delete map;
 	delete mapRenderer;
 	RenderManager::Shutdown();
+	ModelManager::Shutdown();
 }
 
 int main(int argc, char** argv)

@@ -7,7 +7,7 @@ OBJFile::OBJFile()
 
 OBJFile::~OBJFile()
 {
-	int i;
+	unsigned int i;
 
 	for (i = 0; i < vertices.size(); i++)
 	{

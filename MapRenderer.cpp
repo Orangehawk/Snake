@@ -55,7 +55,7 @@ void MapRenderer::UpdateMap()
 {
 	int** mapRaw = storedMap->GetMap();
 	
-	int snakeIterator = 1;
+	unsigned int snakeIterator = 1;
 	food->SetActive(false);
 
 	for (int i = 1; i < rows - 1; i++)

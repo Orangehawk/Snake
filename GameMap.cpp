@@ -1,6 +1,7 @@
 #include "GameMap.h"
 #include <iostream>
 #include <random>
+#include <cmath>
 
 
 GameMap::GameMap(int mapRows, int mapColumns)
@@ -51,10 +52,10 @@ Snake* GameMap::GetSnake() const
 	return snake;
 }
 
-void GameMap::AddSnake(int row, int column)
-{
-
-}
+//void GameMap::AddSnake(int row, int column)
+//{
+//
+//}
 
 bool GameMap::AddFood(int row, int column)
 {
@@ -125,7 +126,7 @@ int GameMap::GetIconFood() const
 	return iconFood;
 }
 
-void GameMap::MoveSnake(Direction dir)
+bool GameMap::MoveSnake(Direction dir)
 {
 	Tail* currentHead = snake->GetHead();
 	Tail* currentTailEnd = snake->GetTail();
@@ -157,7 +158,7 @@ void GameMap::MoveSnake(Direction dir)
 	if (CheckCell(newRow, newColumn) == iconWall || CheckCell(newRow, newColumn) == iconTail)
 	{
 		std::cout << "Game Over" << std::endl;
-		exit(0);
+		return false;
 	}
 	else if (CheckCell(newRow, newColumn) == iconFood)
 	{
@@ -172,8 +173,8 @@ void GameMap::MoveSnake(Direction dir)
 
 		do
 		{
-			r = randRow(mt);
-			c = randColumn(mt);
+			r = (int)std::round(randRow(mt));
+			c = (int)std::round(randColumn(mt));
 		} while (CheckCell(r, c) != iconEmpty);
 
 		AddFood(r, c);
@@ -183,6 +184,7 @@ void GameMap::MoveSnake(Direction dir)
 
 	currentHead = snake->GetHead();
 	gameMap[currentHead->row][currentHead->column] = iconHead;
+	return true;
 }
 
 void GameMap::CreateWalls()
