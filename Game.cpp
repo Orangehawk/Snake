@@ -26,46 +26,10 @@ MapRenderer* mapRenderer;
 
 void SetupGlut()
 {
-	glClearColor(0, 0, 0, 0);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-	float fov = 70;
-	float aspect = 2;
-	float nearVal = 0.1f;
-	float farVal = 1000;
-	float light_position[] = { 0.5, 1, 0.5, 0.0 };
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	gluPerspective(fov, aspect, nearVal, farVal);
-	gluLookAt(-mapSizeRows / 2, 20, mapSizeColumns / 2, -mapSizeRows / 2, 0, mapSizeColumns / 2, 1, 0, 0);
-
-	glEnable(GL_DEPTH_TEST);
+	
 }
 
-void Initialise()
-{
-	RenderManager::Initialise();
 
-	map = new GameMap(mapSizeRows, mapSizeColumns);
-	map->AddFood(3, 15);
-	map->DisplayMap();
-
-	mapRenderer = new MapRenderer(map);
-}
-
-void Run()
-{
-
-}
-
-void Shutdown()
-{
-	delete map;
-	delete mapRenderer;
-	RenderManager::Shutdown();
-}
 
 void Display()
 {
@@ -142,9 +106,15 @@ void KeyboardCallback(unsigned char ch, int x, int y)
 	}
 }
 
-int main(int argc, char** argv)
+void Initialise(int& argc, char** argv)
 {
-	Initialise();
+	RenderManager::Initialise();
+
+	map = new GameMap(mapSizeRows, mapSizeColumns);
+	map->AddFood(3, 15);
+	map->DisplayMap();
+
+	mapRenderer = new MapRenderer(map);
 
 	glutInit(&argc, argv);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
@@ -155,10 +125,46 @@ int main(int argc, char** argv)
 
 	glutKeyboardFunc(KeyboardCallback);
 
-	SetupGlut();
+
+	glClearColor(0, 0, 0, 0);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	float fov = 70;
+	float aspect = 2;
+	float nearVal = 0.1f;
+	float farVal = 1000;
+	float light_position[] = { 0.5, 1, 0.5, 0.0 };
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	gluPerspective(fov, aspect, nearVal, farVal);
+	gluLookAt(-mapSizeRows / 2, 20, mapSizeColumns / 2, -mapSizeRows / 2, 0, mapSizeColumns / 2, 1, 0, 0);
+
+	glEnable(GL_DEPTH_TEST);
+
+
 	glutDisplayFunc(Display);
 	glutTimerFunc(updateTimer, Move, -1);
+}
+
+void Run()
+{
 	glutMainLoop();
+}
+
+void Shutdown()
+{
+	delete map;
+	delete mapRenderer;
+	RenderManager::Shutdown();
+}
+
+int main(int argc, char** argv)
+{
+	Initialise(argc, argv);
+
+	Run();
 
 	Shutdown();
 
